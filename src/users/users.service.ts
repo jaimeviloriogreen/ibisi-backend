@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { SharedService } from 'src/shared/shared.service';
-import { RolesService } from 'src/roles/roles.service';
-import { UUID } from 'crypto';
+import { GoneException, Injectable, NotFoundException } from "@nestjs/common";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { User } from "./entities/user.entity";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { SharedService } from "src/shared/shared.service";
+import { RolesService } from "src/roles/roles.service";
+import { UUID } from "crypto";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class UsersService {
@@ -27,20 +28,45 @@ export class UsersService {
     delete user.password;
     return user;
   }
+  async findAll() {
+    const users = await this.usersRepository.find({
+      relations: { role: true },
+    });
+    const sanitizedUsers = plainToInstance(User, users);
 
-  findAll() {
-    return this.usersRepository.find({ relations: ['role'] });
+    return sanitizedUsers;
   }
+  async findOne(uuid: UUID) {
+    const user = await this.usersRepository.findOne({
+      where: { uuid },
+      relations: { role: true },
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+    if (!user) throw new NotFoundException(`User with id ${uuid} is not found`);
+
+    if (!user.isActive)
+      throw new GoneException(
+        "This account has been deleted or inactive and is no longer accessible.",
+      );
+    delete user.password;
+    return user;
   }
+  async findOneByIdentification(identification: string) {
+    const user = await this.usersRepository.findOne({
+      where: { identification },
+      relations: { role: true },
+    });
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+    if (!user)
+      throw new NotFoundException(
+        `User with identification ${identification} is not found`,
+      );
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    if (!user.isActive)
+      throw new GoneException(
+        "This account has been deleted or inactive and is no longer accessible.",
+      );
+
+    return user;
   }
 }

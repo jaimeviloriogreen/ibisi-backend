@@ -10,9 +10,9 @@ import {
   IsStrongPassword,
   IsUUID,
   Length,
-} from 'class-validator';
-import { UUID } from 'crypto';
-import { Gender } from '../enums/user.enum';
+} from "class-validator";
+import { UUID } from "crypto";
+import { Gender } from "../enums/user.enum";
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -68,6 +68,6 @@ export class CreateUserDto {
   readonly isActive: boolean;
 
   @IsNotEmpty()
-  @IsUUID('4')
+  @IsUUID("4")
   role: UUID;
 }
