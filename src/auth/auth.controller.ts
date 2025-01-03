@@ -23,7 +23,7 @@ export class AuthController {
     response.cookie("auth_token", token.access_token, {
       httpOnly: true,
       secure: process.env.IBISI_NODE_ENV === "production", // True only in HTTPS
-      sameSite: "lax", // strict",
+      sameSite: "none", // lax, strict",
       maxAge: COOKIE_MAX_AGE,
     });
 

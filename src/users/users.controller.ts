@@ -12,13 +12,11 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UUID } from "crypto";
 import { User } from "./entities/user.entity";
 import { UserAuth } from "./decorators/user.decorator";
-import { Public } from "src/auth/decorators/public.decorator";
 
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Public()
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
