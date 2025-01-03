@@ -23,7 +23,7 @@ export class AuthController {
     response.cookie("auth_token", token.access_token, {
       httpOnly: true,
       secure: process.env.IBISI_NODE_ENV === "production", // True only in HTTPS
-      sameSite: "none", // lax, strict",
+      sameSite: process.env.IBISI_SAME_SITE as "lax" | "strict" | "none",
       maxAge: COOKIE_MAX_AGE,
     });
 
@@ -36,7 +36,7 @@ export class AuthController {
     response.clearCookie("auth_token", {
       httpOnly: true,
       secure: process.env.OSFIT_NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: process.env.IBISI_SAME_SITE as "lax" | "strict" | "none",
     });
     return { message: "Logout successful" };
   }

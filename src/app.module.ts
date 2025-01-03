@@ -9,9 +9,14 @@ import { AuthModule } from "./auth/auth.module";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth/gards/auth.gard";
 import { RoleGuard } from "./roles/gards/roles.gard";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { join } from "path";
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "public"),
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
 
     TypeOrmModule.forRoot({
@@ -24,13 +29,9 @@ import { RoleGuard } from "./roles/gards/roles.gard";
       synchronize: true,
       autoLoadEntities: true,
     }),
-
     RolesModule,
-
     UsersModule,
-
     SharedModule,
-
     AuthModule,
   ],
   controllers: [],
