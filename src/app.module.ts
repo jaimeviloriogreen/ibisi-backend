@@ -11,6 +11,9 @@ import { AuthGuard } from "./auth/gards/auth.gard";
 import { RoleGuard } from "./roles/gards/roles.gard";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
+import { TeachersModule } from "./teachers/teachers.module";
+import { StudentsModule } from "./students/students.module";
+import { AdminModule } from "./admin/admin.module";
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { join } from "path";
     UsersModule,
     SharedModule,
     AuthModule,
+    TeachersModule,
+    StudentsModule,
+    AdminModule,
   ],
   controllers: [],
   providers: [

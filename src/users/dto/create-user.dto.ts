@@ -12,7 +12,7 @@ import {
   Length,
 } from "class-validator";
 import { UUID } from "crypto";
-import { Gender } from "../enums/user.enum";
+import { Gender } from "../enums/user.enums";
 
 export class CreateUserDto {
   @IsNotEmpty()

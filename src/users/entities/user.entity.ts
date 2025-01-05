@@ -5,11 +5,13 @@ import {
   Entity,
   Generated,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Gender } from "../enums/user.enum";
+import { Gender } from "../enums/user.enums";
 import { Exclude } from "class-transformer";
+import { Student } from "src/students/entities/student.entity";
 
 @Entity()
 export class User {
@@ -54,6 +56,9 @@ export class User {
 
   @ManyToOne(() => Role, (role) => role.user)
   role: Role;
+
+  @OneToOne(() => Student, (student) => student.user)
+  student: Student;
 
   @CreateDateColumn()
   createdAt: Date;
