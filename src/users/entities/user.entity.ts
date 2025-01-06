@@ -12,6 +12,8 @@ import {
 import { Gender } from "../enums/user.enums";
 import { Exclude } from "class-transformer";
 import { Student } from "src/students/entities/student.entity";
+import { Teacher } from "src/teachers/entities/teacher.entity";
+import { Admin } from "src/admin/entities/admin.entity";
 
 @Entity()
 export class User {
@@ -58,7 +60,13 @@ export class User {
   role: Role;
 
   @OneToOne(() => Student, (student) => student.user)
-  student: Student;
+  student: Student | null;
+
+  @OneToOne(() => Teacher, (teacher) => teacher.user)
+  teacher: Teacher | null;
+
+  @OneToOne(() => Admin, (admin) => admin.user)
+  admin: Admin | null;
 
   @CreateDateColumn()
   createdAt: Date;

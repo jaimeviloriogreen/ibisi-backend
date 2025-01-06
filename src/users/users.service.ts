@@ -30,11 +30,10 @@ export class UsersService {
   }
   async findAll() {
     const users = await this.usersRepository.find({
-      relations: { student: true, role: true },
+      relations: { student: true, role: true, teacher: true, admin: true },
     });
-    const sanitizedUsers = plainToInstance(User, users);
 
-    return sanitizedUsers;
+    return plainToInstance(User, users);
   }
   async findOne(uuid: UUID) {
     const user = await this.usersRepository.findOne({
