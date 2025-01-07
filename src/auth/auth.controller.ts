@@ -19,11 +19,12 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const token = await this.authService.logIn(userLoginAuthDto);
-    console.log("login", process.env.IBISI_NODE_ENV === "production");
+
     response.cookie("auth_token", token.access_token, {
       httpOnly: true,
       secure: process.env.IBISI_NODE_ENV === "production", // True only in HTTPS
       sameSite: process.env.IBISI_SAME_SITE as "lax" | "strict" | "none",
+      domain: ".ibisi.edu.do",
       maxAge: COOKIE_MAX_AGE,
     });
 
@@ -33,11 +34,12 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post("logout")
   logout(@Res({ passthrough: true }) response: Response) {
-    console.log("logout", process.env.IBISI_NODE_ENV === "production");
     response.clearCookie("auth_token", {
       httpOnly: true,
       secure: process.env.OSFIT_NODE_ENV === "production",
       sameSite: process.env.IBISI_SAME_SITE as "lax" | "strict" | "none",
+      domain: ".ibisi.edu.do",
+      path: "/",
     });
     return { message: "Logout successful" };
   }
