@@ -19,7 +19,7 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const token = await this.authService.logIn(userLoginAuthDto);
-    const isProduction = process.env.OSFIT_NODE_ENV === "production";
+    const isProduction = process.env.IBISI_NODE_ENV === "production";
 
     response.cookie("auth_token", token.access_token, {
       httpOnly: true,
@@ -35,7 +35,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post("logout")
   logout(@Res({ passthrough: true }) response: Response) {
-    const isProduction = process.env.OSFIT_NODE_ENV === "production";
+    const isProduction = process.env.IBISI_NODE_ENV === "production";
 
     response.clearCookie("auth_token", {
       httpOnly: true,
