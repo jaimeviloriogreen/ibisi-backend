@@ -79,7 +79,7 @@ export enum StudentStatus {
    * Currently enrolled and active.
    * @type {string}
    */
-  ACTIVE = "ACTIVE",
+  ENROLLED = "ENROLLED",
 
   /**
    * Withdrawn or retired from the institution.

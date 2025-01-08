@@ -36,7 +36,7 @@ export class Student {
   })
   acount_status: string;
 
-  @Column("enum", { enum: StudentStatus, default: StudentStatus.ACTIVE })
+  @Column("enum", { enum: StudentStatus, default: StudentStatus.ENROLLED })
   status: string;
 
   @Column("boolean", { default: false })
