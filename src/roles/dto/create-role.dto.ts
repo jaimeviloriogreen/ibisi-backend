@@ -1,9 +1,9 @@
-import { ArrayNotEmpty, IsArray, IsEnum, IsNotEmpty } from 'class-validator';
-import { Roles, RolesPermissions } from '../enums/role.enum';
+import { ArrayNotEmpty, IsArray, IsEnum, IsNotEmpty } from "class-validator";
+import { RolesEnum, RolesPermissions } from "../enums/role.enum";
 
 export class CreateRoleDto {
   @IsNotEmpty()
-  @IsEnum(Roles)
+  @IsEnum(RolesEnum)
   readonly name: string;
 
   @IsArray()

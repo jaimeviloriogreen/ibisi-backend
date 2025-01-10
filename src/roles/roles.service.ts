@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from './entities/role.entity';
-import { Repository } from 'typeorm';
-import { UUID } from 'crypto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { CreateRoleDto } from "./dto/create-role.dto";
+import { UpdateRoleDto } from "./dto/update-role.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Role } from "./entities/role.entity";
+import { Repository } from "typeorm";
+import { UUID } from "crypto";
+import { RolesEnum } from "./enums/role.enum";
 
 @Injectable()
 export class RolesService {
@@ -17,7 +18,15 @@ export class RolesService {
   }
 
   findAll() {
-    return this.roleRepository.find({ relations: ['user'] });
+    return this.roleRepository.find({ relations: ["user"] });
+  }
+
+  async findOneByName(name: RolesEnum) {
+    const role = await this.roleRepository.findOne({ where: { name } });
+    if (!role)
+      throw new NotFoundException(`Role with name ${name} is not found`);
+
+    return role;
   }
 
   async findOne(uuid: UUID) {

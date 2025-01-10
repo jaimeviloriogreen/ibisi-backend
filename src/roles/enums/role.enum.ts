@@ -5,7 +5,7 @@ export enum RolesPermissions {
   READ_PERMISSION = "READ_PERMISSION",
 }
 
-export enum Roles {
+export enum RolesEnum {
   ADMIN = "ADMIN",
   TEACHER = "TEACHER",
   STUDENT = "STUDENT",

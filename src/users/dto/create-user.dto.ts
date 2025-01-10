@@ -8,11 +8,14 @@ import {
   IsOptional,
   IsString,
   IsStrongPassword,
-  IsUUID,
   Length,
+  ValidateNested,
 } from "class-validator";
-import { UUID } from "crypto";
+
 import { Gender } from "../enums/user.enums";
+import { RolesEnum } from "src/roles/enums/role.enum";
+import { Type } from "class-transformer";
+import { CreateStudentDto } from "src/students/dto/create-student.dto";
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -66,7 +69,7 @@ export class CreateUserDto {
   @IsOptional()
   @IsNotEmpty()
   @IsString()
-  readonly adddress: string;
+  readonly address: string;
 
   @IsOptional()
   @IsNotEmpty()
@@ -79,6 +82,10 @@ export class CreateUserDto {
   readonly isActive: boolean;
 
   @IsNotEmpty()
-  @IsUUID("4")
-  role: UUID;
+  @IsEnum(RolesEnum)
+  role: RolesEnum;
+
+  @ValidateNested()
+  @Type(() => CreateStudentDto)
+  student?: CreateStudentDto;
 }

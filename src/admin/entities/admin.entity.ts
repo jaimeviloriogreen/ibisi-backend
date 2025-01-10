@@ -17,7 +17,7 @@ export class Admin {
   @Generated("uuid")
   uuid: string;
 
-  @OneToOne(() => User, (user) => user.admin)
+  @OneToOne(() => User, (user) => user.admin, { onDelete: "CASCADE" })
   @JoinColumn()
   user: User;
 }

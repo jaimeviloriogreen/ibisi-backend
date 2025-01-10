@@ -48,7 +48,7 @@ export class User {
   gender: Gender;
 
   @Column("varchar", { nullable: true, length: 150 })
-  adddress: string;
+  address: string;
 
   @Column("varchar", { unique: true, nullable: true, length: 100 })
   email: string;

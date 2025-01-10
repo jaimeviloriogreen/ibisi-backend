@@ -6,30 +6,30 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Roles, RolesPermissions } from '../enums/role.enum';
-import { User } from 'src/users/entities/user.entity';
+} from "typeorm";
+import { RolesEnum, RolesPermissions } from "../enums/role.enum";
+import { User } from "src/users/entities/user.entity";
 
 @Entity()
 export class Role {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('uuid', { unique: true })
-  @Generated('uuid')
+  @Column("uuid", { unique: true })
+  @Generated("uuid")
   uuid: string;
 
   @Column({
-    type: 'enum',
-    enum: Roles,
-    default: Roles.STUDENT,
+    type: "enum",
+    enum: RolesEnum,
+    default: RolesEnum.STUDENT,
     nullable: false,
     unique: true,
   })
   name: string;
 
   @Column({
-    type: 'simple-array',
+    type: "simple-array",
     nullable: false,
   })
   permissions: RolesPermissions[];

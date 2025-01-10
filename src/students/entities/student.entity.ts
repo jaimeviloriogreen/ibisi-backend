@@ -27,7 +27,7 @@ export class Student {
   @Column("enum", { enum: StudentLevel, default: StudentLevel.FIRST })
   level: string;
 
-  @Column("date")
+  @Column("date", { nullable: true })
   registration_date: Date;
 
   @Column("enum", {
@@ -42,7 +42,7 @@ export class Student {
   @Column("boolean", { default: false })
   scholarship: boolean;
 
-  @OneToOne(() => User, (user) => user.student)
+  @OneToOne(() => User, (user) => user.student, { onDelete: "CASCADE" })
   @JoinColumn()
   user: User;
 

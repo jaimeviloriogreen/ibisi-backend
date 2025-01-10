@@ -17,7 +17,7 @@ export class Teacher {
   @Generated("uuid")
   uuid: string;
 
-  @OneToOne(() => User, (user) => user.teacher)
+  @OneToOne(() => User, (user) => user.teacher, { onDelete: "CASCADE" })
   @JoinColumn()
   user: User;
 }
