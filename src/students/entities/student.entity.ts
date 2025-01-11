@@ -27,7 +27,7 @@ export class Student {
   @Column("enum", { enum: StudentLevel, default: StudentLevel.FIRST })
   level: string;
 
-  @Column("date", { nullable: true })
+  @Column("date")
   registration_date: Date;
 
   @Column("enum", {
