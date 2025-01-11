@@ -88,7 +88,7 @@ export class UsersService {
     } catch (error) {
       if (error.code === "23505") {
         throw new ConflictException(
-          "El nombre de usuario o correo ya está en uso.",
+          "La cédula o el correo del usuario ya están en uso.",
         );
       }
       throw error;
@@ -107,11 +107,11 @@ export class UsersService {
       relations: { role: true },
     });
 
-    if (!user) throw new NotFoundException(`User with id ${uuid} is not found`);
+    if (!user) throw new NotFoundException(`El usuario no se encuentra.`);
 
     if (!user.isActive)
       throw new GoneException(
-        "This account has been deleted or inactive and is no longer accessible.",
+        "Esta cuenta está eliminada o inactiva y ya no está disponible.",
       );
     delete user.password;
     return user;

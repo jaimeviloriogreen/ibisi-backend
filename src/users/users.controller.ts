@@ -24,6 +24,7 @@ export class UsersController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     const { password, confirmPassword } = createUserDto;
+
     if (password !== confirmPassword) {
       throw new BadRequestException("Las contraseñas no coinciden.");
     }
