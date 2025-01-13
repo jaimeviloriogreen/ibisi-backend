@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 import { CreateSubjectDto } from "./dto/create-subject.dto";
 import { UpdateSubjectDto } from "./dto/update-subject.dto";
-import { Repository } from "typeorm";
+import { EntityManager, Repository } from "typeorm";
 import { Subject } from "./entities/subject.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UUID } from "crypto";
@@ -17,9 +17,13 @@ export class SubjectsService {
     private readonly subjecsRepository: Repository<Subject>,
   ) {}
 
-  async create(createSubjectDto: CreateSubjectDto) {
+  async create(createSubjectDto: CreateSubjectDto, manager?: EntityManager) {
     try {
-      return await this.subjecsRepository.save(createSubjectDto);
+      const repo = manager
+        ? manager.getRepository(Subject)
+        : this.subjecsRepository;
+
+      return await repo.save(createSubjectDto);
     } catch (error) {
       if (error.code === "23505") {
         throw new ConflictException("Esta asignatura ya ha sido registrada.");
@@ -32,8 +36,12 @@ export class SubjectsService {
     return this.subjecsRepository.find();
   }
 
-  async findOne(uuid: UUID) {
-    const subject = await this.subjecsRepository.findOne({ where: { uuid } });
+  async findOne(uuid: UUID, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Subject)
+      : this.subjecsRepository;
+
+    const subject = await repo.findOne({ where: { uuid } });
 
     if (!subject)
       throw new NotFoundException(`Esta asignatura no se encuentra.`);

@@ -1,11 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateTeacherDto } from "./dto/create-teacher.dto";
 import { UpdateTeacherDto } from "./dto/update-teacher.dto";
-import { Repository } from "typeorm";
+import { EntityManager, Repository } from "typeorm";
 import { Teacher } from "./entities/teacher.entity";
 import { plainToInstance } from "class-transformer";
 import { User } from "src/users/entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
+import { UUID } from "crypto";
 
 @Injectable()
 export class TeachersService {
@@ -25,8 +26,19 @@ export class TeachersService {
     return sanitizedTeachers;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} teacher`;
+  async findOne(uuid: UUID, manager?: EntityManager) {
+    const repo = manager
+      ? manager.getRepository(Teacher)
+      : this.teachersRepository;
+
+    const teacher = await repo.findOne({
+      where: { uuid },
+      relations: { user: true },
+    });
+
+    if (!teacher) throw new NotFoundException(`Este profesor no se encuentra.`);
+    delete teacher.user.password;
+    return teacher;
   }
 
   update(id: number, updateTeacherDto: UpdateTeacherDto) {

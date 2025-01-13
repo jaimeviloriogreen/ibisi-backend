@@ -4,6 +4,7 @@ import {
   Entity,
   Generated,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -14,6 +15,7 @@ import {
   StudentStatus,
 } from "../enums/student.enums";
 import { User } from "src/users/entities/user.entity";
+import { Grade } from "src/grades/entities/grade.entity";
 
 @Entity()
 export class Student {
@@ -45,6 +47,9 @@ export class Student {
   @OneToOne(() => User, (user) => user.student, { onDelete: "CASCADE" })
   @JoinColumn()
   user: User;
+
+  @OneToMany(() => Grade, (grade) => grade.student)
+  grade: Grade[];
 
   @CreateDateColumn()
   createdAt: Date;

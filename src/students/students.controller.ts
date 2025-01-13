@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { StudentsService } from "./students.service";
 import { CreateStudentDto } from "./dto/create-student.dto";
 import { UpdateStudentDto } from "./dto/update-student.dto";
+import { UUID } from "crypto";
 
 @Controller("students")
 export class StudentsController {
@@ -25,9 +27,9 @@ export class StudentsController {
     return await this.studentsService.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.studentsService.findOne(+id);
+  @Get(":uuid")
+  findOne(@Param("uuid", ParseUUIDPipe) uuid: UUID) {
+    return this.studentsService.findOne(uuid);
   }
 
   @Patch(":id")

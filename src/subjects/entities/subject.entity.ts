@@ -1,8 +1,10 @@
+import { Grade } from "src/grades/entities/grade.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
   Generated,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -27,6 +29,9 @@ export class Subject {
 
   @Column({ type: "smallint" })
   credits: number;
+
+  @OneToMany(() => Grade, (grade) => grade.subject)
+  grade: Grade[];
 
   @CreateDateColumn()
   createdAt: Date;
