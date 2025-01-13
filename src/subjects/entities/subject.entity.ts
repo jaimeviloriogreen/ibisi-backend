@@ -18,7 +18,7 @@ export class Subject {
   @Generated("uuid")
   uuid: string;
 
-  @Column({ type: "varchar", unique: true, length: 50 })
+  @Column({ type: "varchar", unique: true, length: 100 })
   name: string;
 
   @Column({ type: "varchar", unique: true, length: 15 })
