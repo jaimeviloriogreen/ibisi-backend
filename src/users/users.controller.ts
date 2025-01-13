@@ -15,12 +15,13 @@ import { User } from "./entities/user.entity";
 import { UserAuth } from "./decorators/user.decorator";
 import { Role } from "src/roles/decorators/role.decorator";
 import { RolesEnum } from "src/roles/enums/role.enum";
+import { Public } from "src/auth/decorators/public.decorator";
 
-@Role(RolesEnum.ADMIN)
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Role(RolesEnum.ADMIN)
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     const { password, confirmPassword } = createUserDto;
@@ -32,11 +33,13 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Role(RolesEnum.ADMIN)
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
+  @Role(RolesEnum.ADMIN)
   @Get(":uuid")
   findOne(@Param("uuid", ParseUUIDPipe) uuid: UUID) {
     return this.usersService.findOne(uuid);

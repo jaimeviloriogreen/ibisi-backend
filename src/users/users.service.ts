@@ -104,7 +104,14 @@ export class UsersService {
   async findOne(uuid: UUID) {
     const user = await this.usersRepository.findOne({
       where: { uuid },
-      relations: { role: true },
+      relations: {
+        role: true,
+        student: {
+          grade: { subject: true, teacher: { user: true }, student: true },
+        },
+        teacher: true,
+        admin: true,
+      },
     });
 
     if (!user) throw new NotFoundException(`El usuario no se encuentra.`);
@@ -113,8 +120,10 @@ export class UsersService {
       throw new GoneException(
         "Esta cuenta está eliminada o inactiva y ya no está disponible.",
       );
-    delete user.password;
-    return user;
+
+    const sanitizedUser = plainToInstance(User, user);
+
+    return sanitizedUser;
   }
 
   async findOneByIdentification(identification: string) {
