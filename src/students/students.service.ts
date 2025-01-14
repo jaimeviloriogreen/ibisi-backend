@@ -27,6 +27,10 @@ export class StudentsService {
     return sanitizedStudents;
   }
 
+  async countStudents() {
+    return await this.studetsRepository.count();
+  }
+
   async findOne(uuid: UUID, manager?: EntityManager) {
     const repo = manager
       ? manager.getRepository(Student)

@@ -16,6 +16,7 @@ import { StudentsModule } from "./students/students.module";
 import { AdminModule } from "./admin/admin.module";
 import { SubjectsModule } from './subjects/subjects.module';
 import { GradesModule } from './grades/grades.module';
+import { ClassesModule } from './classes/classes.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { GradesModule } from './grades/grades.module';
     AdminModule,
     SubjectsModule,
     GradesModule,
+    ClassesModule,
   ],
   controllers: [],
   providers: [

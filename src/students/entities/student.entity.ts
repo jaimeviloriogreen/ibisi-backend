@@ -4,6 +4,8 @@ import {
   Entity,
   Generated,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -16,6 +18,7 @@ import {
 } from "../enums/student.enums";
 import { User } from "src/users/entities/user.entity";
 import { Grade } from "src/grades/entities/grade.entity";
+import { Class } from "src/classes/entities/class.entity";
 
 @Entity()
 export class Student {
@@ -50,6 +53,12 @@ export class Student {
 
   @OneToMany(() => Grade, (grade) => grade.student)
   grade: Grade[];
+
+  @ManyToMany(() => Class, (classes) => classes.students)
+  @JoinTable({
+    name: "students_classes",
+  })
+  classes: Class[];
 
   @CreateDateColumn()
   createdAt: Date;

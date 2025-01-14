@@ -1,3 +1,4 @@
+import { Class } from "src/classes/entities/class.entity";
 import { Grade } from "src/grades/entities/grade.entity";
 import {
   Column,
@@ -32,6 +33,9 @@ export class Subject {
 
   @OneToMany(() => Grade, (grade) => grade.subject)
   grade: Grade[];
+
+  @OneToMany(() => Class, (classes) => classes.teacher)
+  classes: Class[];
 
   @CreateDateColumn()
   createdAt: Date;

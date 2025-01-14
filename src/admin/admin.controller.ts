@@ -10,7 +10,10 @@ import {
 import { AdminService } from "./admin.service";
 import { CreateAdminDto } from "./dto/create-admin.dto";
 import { UpdateAdminDto } from "./dto/update-admin.dto";
+import { Role } from "src/roles/decorators/role.decorator";
+import { RolesEnum } from "src/roles/enums/role.enum";
 
+@Role(RolesEnum.ADMIN)
 @Controller("admin")
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
@@ -23,6 +26,11 @@ export class AdminController {
   @Get()
   findAll() {
     return this.adminService.findAll();
+  }
+
+  @Get("/general-resume")
+  getGeneralResume() {
+    return this.adminService.getGeneralResume();
   }
 
   @Get(":id")

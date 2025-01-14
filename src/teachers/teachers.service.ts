@@ -41,6 +41,10 @@ export class TeachersService {
     return teacher;
   }
 
+  async countTeachers() {
+    return await this.teachersRepository.count();
+  }
+
   update(id: number, updateTeacherDto: UpdateTeacherDto) {
     return `This action updates a #${id} teacher`;
   }
