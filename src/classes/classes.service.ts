@@ -7,6 +7,8 @@ import { DataSource, Repository } from "typeorm";
 import { SubjectsService } from "src/subjects/subjects.service";
 import { TeachersService } from "src/teachers/teachers.service";
 import { StudentsService } from "src/students/students.service";
+import { User } from "src/users/entities/user.entity";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class ClassesService {
@@ -61,25 +63,34 @@ export class ClassesService {
       }
     });
   }
-
   async countClasses() {
     return await this.classesRepository.count({
       where: { is_active: true },
     });
   }
-
   async findAll() {
-    return await this.classesRepository.find();
-  }
+    const classes = await this.classesRepository.find({
+      relations: {
+        subject: true,
+        teacher: {
+          user: true,
+        },
+        students: {
+          user: true,
+        },
+      },
+    });
 
+    const classesSanitized = plainToInstance(User, classes);
+
+    return classesSanitized;
+  }
   findOne(id: number) {
     return `This action returns a #${id} class`;
   }
-
   update(id: number, updateClassDto: UpdateClassDto) {
     return `This action updates a #${id} class`;
   }
-
   remove(id: number) {
     return `This action removes a #${id} class`;
   }

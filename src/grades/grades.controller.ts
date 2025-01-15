@@ -10,6 +10,8 @@ import {
 import { GradesService } from "./grades.service";
 import { CreateGradeDto } from "./dto/create-grade.dto";
 import { UpdateGradeDto } from "./dto/update-grade.dto";
+import { Role } from "src/roles/decorators/role.decorator";
+import { RolesEnum } from "src/roles/enums/role.enum";
 
 @Controller("grades")
 export class GradesController {
@@ -20,6 +22,7 @@ export class GradesController {
     return this.gradesService.create(createGradeDto);
   }
 
+  @Role(RolesEnum.ADMIN)
   @Get()
   findAll() {
     return this.gradesService.findAll();
