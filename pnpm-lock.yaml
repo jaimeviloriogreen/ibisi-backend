@@ -44,6 +44,9 @@ importers:
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
+      ibisi-backend:
+        specifier: 'link:'
+        version: 'link:'
       pg:
         specifier: ^8.13.1
         version: 8.13.1

@@ -1,18 +1,65 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { CreateClassDto } from "./dto/create-class.dto";
 import { UpdateClassDto } from "./dto/update-class.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Class } from "./entities/class.entity";
-import { Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
+import { SubjectsService } from "src/subjects/subjects.service";
+import { TeachersService } from "src/teachers/teachers.service";
+import { StudentsService } from "src/students/students.service";
 
 @Injectable()
 export class ClassesService {
   constructor(
     @InjectRepository(Class)
     private readonly classesRepository: Repository<Class>,
+    private readonly dataSource: DataSource,
+    private readonly subjectsServise: SubjectsService,
+    private readonly teachersServise: TeachersService,
+    private readonly studentsServise: StudentsService,
   ) {}
-  create(createClassDto: CreateClassDto) {
-    return "This action adds a new class";
+  async create(createClassDto: CreateClassDto) {
+    createClassDto.start_time = `${createClassDto.start_time}:00`;
+    createClassDto.end_time = `${createClassDto.end_time}:00`;
+
+    return await this.dataSource.transaction(async (manager) => {
+      try {
+        const subject = await this.subjectsServise.findOne(
+          createClassDto.subjectId,
+          manager,
+        );
+
+        const teacher = await this.teachersServise.findOne(
+          createClassDto.teacherId,
+          manager,
+        );
+
+        const students = await Promise.all(
+          createClassDto.studentsId.map(async (uuid) => {
+            return await this.studentsServise.findOne(uuid, manager);
+          }),
+        );
+
+        const classCreated = this.dataSource.getRepository(Class).create({
+          start_date: createClassDto.start_date,
+          end_date: createClassDto.end_date,
+          start_time: createClassDto.start_time,
+          end_time: createClassDto.end_time,
+          section: createClassDto.section,
+          day: createClassDto.day,
+          subject,
+          teacher,
+          students,
+        });
+
+        return await manager.getRepository(Class).save(classCreated);
+      } catch (error) {
+        if (error.code === "23505") {
+          throw new ConflictException("Esta clase ya ha sido registrada.");
+        }
+        throw error;
+      }
+    });
   }
 
   async countClasses() {
@@ -21,8 +68,8 @@ export class ClassesService {
     });
   }
 
-  findAll() {
-    return `This action returns all classes`;
+  async findAll() {
+    return await this.classesRepository.find();
   }
 
   findOne(id: number) {

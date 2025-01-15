@@ -7,12 +7,14 @@ import {
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from "typeorm";
 import { ClassesDay, ClassesSections } from "../enums/classes.enums";
 import { Teacher } from "src/teachers/entities/teacher.entity";
 import { Subject } from "src/subjects/entities/subject.entity";
 
+@Unique(["teacher", "subject", "day"])
 @Entity()
 export class Class {
   @PrimaryGeneratedColumn()

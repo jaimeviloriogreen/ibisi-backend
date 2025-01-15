@@ -35,7 +35,10 @@ export class GradesService {
         );
 
         const teacher = createGradeDto.teacherId
-          ? await this.teachersServise.findOne(createGradeDto.teacherId)
+          ? await this.teachersServise.findOne(
+              createGradeDto.teacherId,
+              manager,
+            )
           : null;
 
         const grade = manager.getRepository(Grade).create({
