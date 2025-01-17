@@ -1,15 +1,12 @@
-import { Transform } from "class-transformer";
 import {
   ArrayNotEmpty,
   IsArray,
   IsBoolean,
-  IsDate,
+  IsDateString,
   IsEnum,
-  IsMilitaryTime,
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsTimeZone,
   IsUUID,
   Matches,
 } from "class-validator";
@@ -18,14 +15,12 @@ import { UUID } from "crypto";
 
 export class CreateClassDto {
   @IsNotEmpty()
-  @IsDate()
-  @Transform(({ value }) => new Date(value), { toClassOnly: true })
-  start_date: Date;
+  @IsDateString()
+  start_date: string;
 
   @IsNotEmpty()
-  @IsDate()
-  @Transform(({ value }) => new Date(value), { toClassOnly: true })
-  end_date: Date;
+  @IsDateString()
+  end_date: string;
 
   @IsNotEmpty()
   @Matches(/^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$/, {
@@ -67,3 +62,4 @@ export class CreateClassDto {
   @IsBoolean()
   is_active: boolean;
 }
+new Date("2025-01-13");

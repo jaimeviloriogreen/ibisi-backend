@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { ClassesService } from "./classes.service";
 import { CreateClassDto } from "./dto/create-class.dto";
 import { UpdateClassDto } from "./dto/update-class.dto";
+import { UUID } from "crypto";
 
 @Controller("classes")
 export class ClassesController {
@@ -25,9 +27,9 @@ export class ClassesController {
     return this.classesService.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.classesService.findOne(+id);
+  @Get(":uuid")
+  findOne(@Param("uuid", ParseUUIDPipe) uuid: UUID) {
+    return this.classesService.findOne(uuid);
   }
 
   @Patch(":id")

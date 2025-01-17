@@ -14,9 +14,9 @@ import { join } from "path";
 import { TeachersModule } from "./teachers/teachers.module";
 import { StudentsModule } from "./students/students.module";
 import { AdminModule } from "./admin/admin.module";
-import { SubjectsModule } from './subjects/subjects.module';
-import { GradesModule } from './grades/grades.module';
-import { ClassesModule } from './classes/classes.module';
+import { SubjectsModule } from "./subjects/subjects.module";
+import { GradesModule } from "./grades/grades.module";
+import { ClassesModule } from "./classes/classes.module";
 
 @Module({
   imports: [

@@ -56,7 +56,9 @@ export class Class {
   @ManyToOne(() => Subject, (subject) => subject.classes)
   subject: Subject;
 
-  @ManyToMany(() => Student, (student) => student.classes)
+  @ManyToMany(() => Student, (student) => student.classes, {
+    onDelete: "CASCADE",
+  })
   students: Student[];
 
   @CreateDateColumn()
