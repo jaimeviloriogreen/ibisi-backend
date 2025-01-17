@@ -109,7 +109,12 @@ export class UsersService {
         student: {
           grade: { subject: true, teacher: { user: true }, student: true },
         },
-        teacher: true,
+        teacher: {
+          classes: {
+            subject: true,
+            students: true,
+          },
+        },
         admin: true,
       },
     });

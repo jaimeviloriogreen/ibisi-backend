@@ -15,7 +15,6 @@ import { User } from "./entities/user.entity";
 import { UserAuth } from "./decorators/user.decorator";
 import { Role } from "src/roles/decorators/role.decorator";
 import { RolesEnum } from "src/roles/enums/role.enum";
-import { Public } from "src/auth/decorators/public.decorator";
 
 @Controller("users")
 export class UsersController {
