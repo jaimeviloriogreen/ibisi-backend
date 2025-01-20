@@ -1,14 +1,19 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateGradeDto } from "./dto/create-grade.dto";
 import { UpdateGradeDto } from "./dto/update-grade.dto";
 import { Grade } from "./entities/grade.entity";
-import { DataSource, Repository } from "typeorm";
+import { DataSource, EntityManager, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { SubjectsService } from "src/subjects/subjects.service";
 import { StudentsService } from "src/students/students.service";
 import { TeachersService } from "src/teachers/teachers.service";
 import { User } from "src/users/entities/user.entity";
 import { plainToInstance } from "class-transformer";
+import { UUID } from "crypto";
 
 @Injectable()
 export class GradesService {
@@ -71,12 +76,45 @@ export class GradesService {
     return sanitizedGrades;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} grade`;
+  async findOne(uuid: UUID, manager?: EntityManager) {
+    const repo = manager ? manager.getRepository(Grade) : this.gradesRepository;
+
+    const grade = await repo.findOne({ where: { uuid } });
+
+    if (!grade)
+      throw new NotFoundException(`Esta calificación no se encuentra.`);
+
+    return grade;
   }
 
-  update(id: number, updateGradeDto: UpdateGradeDto) {
-    return `This action updates a #${id} grade`;
+  async update(uuid: UUID, updateGradeDto: UpdateGradeDto) {
+    return await this.dataSource.transaction(async (manager) => {
+      try {
+        const { final_grade, teacher_comments } = updateGradeDto;
+        //  subjectId,
+        // studentId,
+        // teacherId,
+        // internal_notes
+
+        const grade = await this.findOne(uuid, manager);
+
+        // const subject = await this.subjectsServise.findOne(subjectId, manager);
+        // const student = await this.studentsServise.findOne(studentId, manager);
+        // const teacher = await this.teachersServise.findOne(teacherId, manager);
+
+        grade.final_grade = final_grade;
+        grade.teacher_comments = teacher_comments;
+        // grade.internal_notes = internal_notes;
+
+        await this.dataSource.getRepository(Grade).save(grade);
+        return grade;
+      } catch (error) {
+        if (error.code === "23505") {
+          throw new ConflictException("Esta clase ya ha sido registrada.");
+        }
+        throw error;
+      }
+    });
   }
 
   remove(id: number) {

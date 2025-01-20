@@ -37,8 +37,16 @@ export class ClassesController {
     return this.classesService.update(+id, updateClassDto);
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.classesService.remove(+id);
+  @Delete(":uuid")
+  remove(@Param("uuid", ParseUUIDPipe) uuid: UUID) {
+    return this.classesService.remove(uuid);
+  }
+
+  @Delete(":classUUID/student/:studentUUID")
+  removeStudent(
+    @Param("classUUID", ParseUUIDPipe) classUUID: UUID,
+    @Param("studentUUID", ParseUUIDPipe) studentUUID: UUID,
+  ) {
+    return this.classesService.removeStudent(classUUID, studentUUID);
   }
 }

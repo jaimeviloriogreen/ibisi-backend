@@ -4,6 +4,7 @@ import {
   IsPositive,
   IsUUID,
   Max,
+  MinLength,
 } from "class-validator";
 import { UUID } from "crypto";
 

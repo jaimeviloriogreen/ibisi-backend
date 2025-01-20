@@ -107,7 +107,11 @@ export class UsersService {
       relations: {
         role: true,
         student: {
-          grade: { subject: true, teacher: { user: true }, student: true },
+          grade: { subject: true, teacher: { user: true } }, // student: true
+          classes: {
+            subject: true,
+            teacher: { user: true },
+          },
         },
         teacher: {
           classes: {

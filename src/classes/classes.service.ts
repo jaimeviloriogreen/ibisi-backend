@@ -101,11 +101,24 @@ export class ClassesService {
         },
         students: {
           user: true,
+          grade: {
+            subject: true,
+          },
         },
       },
     });
 
     if (!getClass) throw new NotFoundException(`Esta clase no se encuentra.`);
+
+    // Filter grades that only apply to the subject of this class
+    if (getClass) {
+      getClass.students = getClass.students.map((student) => {
+        student.grade = student.grade.filter(
+          (grade) => grade.subject.id === getClass.subject.id,
+        );
+        return student;
+      });
+    }
 
     // TODO: Sanear la contreaseña de los usuarios en getClass
 
@@ -115,7 +128,23 @@ export class ClassesService {
   update(id: number, updateClassDto: UpdateClassDto) {
     return `This action updates a #${id} class`;
   }
-  remove(id: number) {
-    return `This action removes a #${id} class`;
+  remove(uuid: UUID) {
+    return `This action removes a #${uuid} class`;
+  }
+
+  async removeStudent(classUUID: UUID, studentUUID: UUID) {
+    return await this.dataSource.transaction(async (manager) => {
+      const getStudent = await this.studentsServise.findOne(
+        studentUUID,
+        manager,
+      );
+      const getClass = await this.findOne(classUUID, manager);
+
+      getClass.students = getClass.students.filter((student) => {
+        return student.id !== getStudent.id;
+      });
+
+      return await manager.getRepository(Class).save(getClass);
+    });
   }
 }
