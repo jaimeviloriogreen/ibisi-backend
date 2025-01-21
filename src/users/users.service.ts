@@ -134,7 +134,6 @@ export class UsersService {
 
     return sanitizedUser;
   }
-
   async findOneByIdentification(identification: string) {
     const user = await this.usersRepository.findOne({
       where: { identification },
@@ -152,6 +151,32 @@ export class UsersService {
       );
 
     return user;
+  }
+
+  async updateOne(uuid: UUID, updateUserDto: UpdateUserDto) {
+    try {
+      const user = await this.findOne(uuid);
+
+      user.fname = updateUserDto.fname;
+      user.lname = updateUserDto.lname;
+      user.identification = updateUserDto.identification;
+      user.email = updateUserDto.email;
+      user.phones = updateUserDto.phones;
+      user.address = updateUserDto.address;
+
+      await this.usersRepository.save(user);
+
+      delete user.password;
+
+      return user;
+    } catch (error) {
+      if (error.code === "23505") {
+        throw new ConflictException(
+          "La cédula o el correo del usuario ya están en uso.",
+        );
+      }
+      throw error;
+    }
   }
 }
 // if (error.code === "23505") {

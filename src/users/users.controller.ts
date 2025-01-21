@@ -6,6 +6,7 @@ import {
   Param,
   ParseUUIDPipe,
   BadRequestException,
+  Patch,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -15,6 +16,7 @@ import { User } from "./entities/user.entity";
 import { UserAuth } from "./decorators/user.decorator";
 import { Role } from "src/roles/decorators/role.decorator";
 import { RolesEnum } from "src/roles/enums/role.enum";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Controller("users")
 export class UsersController {
@@ -42,6 +44,14 @@ export class UsersController {
   @Get(":uuid")
   findOne(@Param("uuid", ParseUUIDPipe) uuid: UUID) {
     return this.usersService.findOne(uuid);
+  }
+
+  @Patch(":uuid")
+  updateOne(
+    @Param("uuid", ParseUUIDPipe) uuid: UUID,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.usersService.updateOne(uuid, updateUserDto);
   }
 
   @Post("profile")
