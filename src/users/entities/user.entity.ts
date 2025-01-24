@@ -47,10 +47,25 @@ export class User {
   })
   gender: Gender;
 
-  @Column("varchar", { nullable: true, length: 150 })
+  @Column("varchar", {
+    nullable: true,
+    length: 150,
+    transformer: {
+      to: (value: string | null) => (value === "" ? null : value),
+      from: (value: string | null) => (value === "" ? null : value),
+    },
+  })
   address: string;
 
-  @Column("varchar", { unique: true, nullable: true, length: 100 })
+  @Column("varchar", {
+    unique: true,
+    nullable: true,
+    length: 100,
+    transformer: {
+      to: (value: string | null) => (value === "" ? null : value),
+      from: (value: string | null) => (value === "" ? null : value),
+    },
+  })
   email: string;
 
   @Column("boolean", { nullable: false, default: true })

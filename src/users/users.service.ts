@@ -4,9 +4,10 @@ import {
   GoneException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { UpdateUserDto, UpdateUserPasswordDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";
 import { DataSource, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -34,6 +35,7 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     try {
       return await this.dataSource.transaction(async (manager) => {
+        // TODO: make manager context
         const password = await this.sharedService.hashPassword(
           createUserDto.password,
         );
@@ -101,7 +103,7 @@ export class UsersService {
 
     return plainToInstance(User, users);
   }
-  async findOne(uuid: UUID) {
+  async findOne(uuid: UUID, sanitized: boolean = true) {
     const user = await this.usersRepository.findOne({
       where: { uuid },
       relations: {
@@ -130,7 +132,7 @@ export class UsersService {
         "Esta cuenta está eliminada o inactiva y ya no está disponible.",
       );
 
-    const sanitizedUser = plainToInstance(User, user);
+    const sanitizedUser = sanitized ? plainToInstance(User, user) : user;
 
     return sanitizedUser;
   }
@@ -153,7 +155,7 @@ export class UsersService {
     return user;
   }
 
-  async updateOne(uuid: UUID, updateUserDto: UpdateUserDto) {
+  async updateOneProfile(uuid: UUID, updateUserDto: UpdateUserDto) {
     try {
       const user = await this.findOne(uuid);
 
@@ -178,7 +180,30 @@ export class UsersService {
       throw error;
     }
   }
+
+  async updateOnePassword(
+    uuid: UUID,
+    updateUserPasswordDto: UpdateUserPasswordDto,
+  ) {
+    const user = await this.findOne(uuid, false);
+
+    const passwordValidated = await this.sharedService.verifyPassword(
+      updateUserPasswordDto.oldPassword,
+      user.password.toString(),
+    );
+    if (!passwordValidated)
+      throw new UnauthorizedException(`Contraseña inválida`);
+
+    user.password = await this.sharedService.hashPassword(
+      updateUserPasswordDto.password,
+    );
+
+    await this.usersRepository.save(user);
+
+    return plainToInstance(User, user);
+  }
 }
+
 // if (error.code === "23505") {
 //   throw new BadRequestException("This category already exists");
 // }

@@ -16,7 +16,7 @@ import { User } from "./entities/user.entity";
 import { UserAuth } from "./decorators/user.decorator";
 import { Role } from "src/roles/decorators/role.decorator";
 import { RolesEnum } from "src/roles/enums/role.enum";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { UpdateUserDto, UpdateUserPasswordDto } from "./dto/update-user.dto";
 
 @Controller("users")
 export class UsersController {
@@ -46,12 +46,25 @@ export class UsersController {
     return this.usersService.findOne(uuid);
   }
 
-  @Patch(":uuid")
-  updateOne(
+  @Patch("profile/:uuid")
+  updateOneProfile(
     @Param("uuid", ParseUUIDPipe) uuid: UUID,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.usersService.updateOne(uuid, updateUserDto);
+    return this.usersService.updateOneProfile(uuid, updateUserDto);
+  }
+
+  @Patch("password/:uuid")
+  updateOnePassword(
+    @Param("uuid", ParseUUIDPipe) uuid: UUID,
+    @Body() updateUserPasswordDto: UpdateUserPasswordDto,
+  ) {
+    const { password, confirmPassword } = updateUserPasswordDto;
+
+    if (password !== confirmPassword) {
+      throw new BadRequestException("Las contraseñas no coinciden.");
+    }
+    return this.usersService.updateOnePassword(uuid, updateUserPasswordDto);
   }
 
   @Post("profile")
