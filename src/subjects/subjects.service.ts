@@ -32,8 +32,8 @@ export class SubjectsService {
     }
   }
 
-  findAll() {
-    return this.subjecsRepository.find();
+  async findAll() {
+    return await this.subjecsRepository.find();
   }
 
   async findOne(uuid: UUID, manager?: EntityManager) {

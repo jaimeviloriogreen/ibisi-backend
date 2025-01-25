@@ -12,7 +12,10 @@ import { TeachersService } from "./teachers.service";
 import { CreateTeacherDto } from "./dto/create-teacher.dto";
 import { UpdateTeacherDto } from "./dto/update-teacher.dto";
 import { UUID } from "crypto";
+import { Role } from "src/roles/decorators/role.decorator";
+import { RolesEnum } from "src/roles/enums/role.enum";
 
+@Role(RolesEnum.ADMIN)
 @Controller("teachers")
 export class TeachersController {
   constructor(private readonly teachersService: TeachersService) {}

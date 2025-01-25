@@ -12,7 +12,10 @@ import { SubjectsService } from "./subjects.service";
 import { CreateSubjectDto } from "./dto/create-subject.dto";
 import { UpdateSubjectDto } from "./dto/update-subject.dto";
 import { UUID } from "crypto";
+import { Role } from "src/roles/decorators/role.decorator";
+import { RolesEnum } from "src/roles/enums/role.enum";
 
+@Role(RolesEnum.ADMIN)
 @Controller("subjects")
 export class SubjectsController {
   constructor(private readonly subjectsService: SubjectsService) {}
