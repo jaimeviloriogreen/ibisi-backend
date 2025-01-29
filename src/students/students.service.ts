@@ -7,6 +7,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { plainToInstance } from "class-transformer";
 import { User } from "src/users/entities/user.entity";
 import { UUID } from "crypto";
+import { StudentStatus } from "./enums/student.enums";
 
 @Injectable()
 export class StudentsService {
@@ -20,7 +21,9 @@ export class StudentsService {
 
   async findAll() {
     const students = await this.studetsRepository.find({
+      where: [{ user: { isActive: true }, status: StudentStatus.ENROLLED }],
       relations: { user: true },
+      order: { user: { fname: "ASC" } },
     });
     const sanitizedStudents = plainToInstance(User, students);
 

@@ -99,6 +99,7 @@ export class UsersService {
   async findAll() {
     const users = await this.usersRepository.find({
       relations: { student: true, role: true, teacher: true, admin: true },
+      order: { fname: "ASC" },
     });
 
     return plainToInstance(User, users);
