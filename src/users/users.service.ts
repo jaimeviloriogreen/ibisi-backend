@@ -96,13 +96,17 @@ export class UsersService {
       throw error;
     }
   }
-  async findAll() {
-    const users = await this.usersRepository.find({
+  async findAll(page: number, limit: number) {
+    const [data, total] = await this.usersRepository.findAndCount({
       relations: { student: true, role: true, teacher: true, admin: true },
       order: { fname: "ASC" },
+      take: limit,
+      skip: page >= 1 ? (page - 1) * limit : 0,
     });
 
-    return plainToInstance(User, users);
+    const users = plainToInstance(User, data);
+
+    return { users, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
   async findOne(uuid: UUID, sanitized: boolean = true) {
     const user = await this.usersRepository.findOne({

@@ -7,6 +7,8 @@ import {
   ParseUUIDPipe,
   BadRequestException,
   Patch,
+  Query,
+  ParseIntPipe,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -36,8 +38,11 @@ export class UsersController {
 
   @Role(RolesEnum.ADMIN)
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(
+    @Query("page", ParseIntPipe) page = 1,
+    @Query("limit", ParseIntPipe) limit = 10,
+  ) {
+    return this.usersService.findAll(page, limit);
   }
 
   @Role(RolesEnum.ADMIN)

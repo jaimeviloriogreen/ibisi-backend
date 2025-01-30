@@ -106,6 +106,13 @@ export class ClassesService {
           },
         },
       },
+      order: {
+        students: {
+          user: {
+            fname: "ASC",
+          },
+        },
+      },
     });
 
     if (!getClass) throw new NotFoundException(`Esta clase no se encuentra.`);
