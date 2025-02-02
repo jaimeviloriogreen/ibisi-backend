@@ -135,8 +135,9 @@ export class ClassesService {
   update(id: number, updateClassDto: UpdateClassDto) {
     return `This action updates a #${id} class`;
   }
-  remove(uuid: UUID) {
-    return `This action removes a #${uuid} class`;
+  async remove(uuid: UUID) {
+    const { id } = await this.findOne(uuid);
+    return this.classesRepository.delete({ id });
   }
 
   async removeStudent(classUUID: UUID, studentUUID: UUID) {
