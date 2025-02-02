@@ -9,7 +9,7 @@ import {
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto, UpdateUserPasswordDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";
-import { DataSource, Repository } from "typeorm";
+import { DataSource, ILike, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { SharedService } from "src/shared/shared.service";
 import { RolesService } from "src/roles/roles.service";
@@ -132,11 +132,6 @@ export class UsersService {
 
     if (!user) throw new NotFoundException(`El usuario no se encuentra.`);
 
-    if (!user.isActive)
-      throw new GoneException(
-        "Esta cuenta está eliminada o inactiva y ya no está disponible.",
-      );
-
     const sanitizedUser = sanitized ? plainToInstance(User, user) : user;
 
     return sanitizedUser;
@@ -149,17 +144,16 @@ export class UsersService {
 
     if (!user)
       throw new NotFoundException(
-        `User with identification ${identification} is not found`,
+        `Usuario con la cédula ${identification} no se encuentra`,
       );
 
     if (!user.isActive)
       throw new GoneException(
-        "This account has been deleted or inactive and is no longer accessible.",
+        "Esta cuenta está eliminada o inactiva y ya no está disponible.",
       );
 
     return user;
   }
-
   async updateOneProfile(uuid: UUID, updateUserDto: UpdateUserDto) {
     try {
       const user = await this.findOne(uuid);
@@ -185,7 +179,6 @@ export class UsersService {
       throw error;
     }
   }
-
   async updateOnePassword(
     uuid: UUID,
     updateUserPasswordDto: UpdateUserPasswordDto,
@@ -206,6 +199,25 @@ export class UsersService {
     await this.usersRepository.save(user);
 
     return plainToInstance(User, user);
+  }
+  async searchUsers(query: string, page: number, limit: number) {
+    if (!query)
+      throw new BadRequestException("Debe proporcionar un término de búsqueda");
+
+    const [data, total] = await this.usersRepository.findAndCount({
+      relations: { student: true, role: true, teacher: true, admin: true },
+      order: { fname: "ASC" },
+      where: [
+        { fname: ILike(`%${query}%`) },
+        { lname: ILike(`%${query}%`) },
+        { identification: ILike(`%${query}%`) },
+      ],
+      take: limit,
+      skip: page >= 1 ? (page - 1) * limit : 0,
+    });
+
+    const users = plainToInstance(User, data);
+    return { users, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 }
 

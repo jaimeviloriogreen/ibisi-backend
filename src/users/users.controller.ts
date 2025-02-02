@@ -46,6 +46,16 @@ export class UsersController {
   }
 
   @Role(RolesEnum.ADMIN)
+  @Get("search")
+  searchUsers(
+    @Query("q") query: string,
+    @Query("page", ParseIntPipe) page = 1,
+    @Query("limit", ParseIntPipe) limit = 10,
+  ) {
+    return this.usersService.searchUsers(query, page, limit);
+  }
+
+  @Role(RolesEnum.ADMIN)
   @Get(":uuid")
   findOne(@Param("uuid", ParseUUIDPipe) uuid: UUID) {
     return this.usersService.findOne(uuid);
