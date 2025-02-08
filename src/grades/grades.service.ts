@@ -47,7 +47,10 @@ export class GradesService {
           : null;
 
         const grade = manager.getRepository(Grade).create({
-          final_grade: createGradeDto.final_grade,
+          participations: createGradeDto.participations,
+          exams: createGradeDto.exams,
+          attendance: createGradeDto.attendance,
+          practices: createGradeDto.practices,
           teacher_comments: createGradeDto.teacher_comments,
           internal_notes: createGradeDto.internal_notes,
           student,
@@ -55,7 +58,6 @@ export class GradesService {
           teacher,
         });
 
-        // await manager.save(Grade, grade);
         return await manager.getRepository(Grade).save(grade);
       } catch (error) {
         if (error.code === "23505") {
@@ -70,7 +72,9 @@ export class GradesService {
 
   findAll() {
     const grades = this.gradesRepository.find({
-      relations: { student: { user: true } },
+      relations: {
+        student: { user: true },
+      },
     });
     const sanitizedGrades = plainToInstance(User, grades);
     return sanitizedGrades;
@@ -90,23 +94,26 @@ export class GradesService {
   async update(uuid: UUID, updateGradeDto: UpdateGradeDto) {
     return await this.dataSource.transaction(async (manager) => {
       try {
-        const { final_grade, teacher_comments } = updateGradeDto;
-        //  subjectId,
-        // studentId,
-        // teacherId,
-        // internal_notes
+        const {
+          teacher_comments,
+          practices,
+          participations,
+          attendance,
+          exams,
+          internal_notes,
+        } = updateGradeDto;
 
         const grade = await this.findOne(uuid, manager);
 
-        // const subject = await this.subjectsServise.findOne(subjectId, manager);
-        // const student = await this.studentsServise.findOne(studentId, manager);
-        // const teacher = await this.teachersServise.findOne(teacherId, manager);
-
-        grade.final_grade = final_grade;
         grade.teacher_comments = teacher_comments;
-        // grade.internal_notes = internal_notes;
+        grade.internal_notes = internal_notes;
+        grade.practices = practices ?? grade.practices;
+        grade.participations = participations ?? grade.participations;
+        grade.attendance = attendance ?? grade.attendance;
+        grade.exams = exams ?? grade.exams;
 
         await this.dataSource.getRepository(Grade).save(grade);
+
         return grade;
       } catch (error) {
         if (error.code === "23505") {
@@ -117,7 +124,8 @@ export class GradesService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} grade`;
+  async remove(uuid: UUID) {
+    const grade = await this.findOne(uuid);
+    return this.gradesRepository.delete({ id: grade.id });
   }
 }

@@ -45,8 +45,8 @@ export class GradesController {
     return this.gradesService.update(uuid, updateGradeDto);
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.gradesService.remove(+id);
+  @Delete(":uuid")
+  remove(@Param("uuid") uuid: UUID) {
+    return this.gradesService.remove(uuid);
   }
 }

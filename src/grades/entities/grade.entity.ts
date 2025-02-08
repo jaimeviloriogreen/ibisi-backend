@@ -1,7 +1,10 @@
+import { GRADE_PECENTAGE } from "src/configs/constants";
 import { Student } from "src/students/entities/student.entity";
 import { Subject } from "src/subjects/entities/subject.entity";
 import { Teacher } from "src/teachers/entities/teacher.entity";
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Check,
   Column,
   CreateDateColumn,
@@ -23,9 +26,38 @@ export class Grade {
   @Generated("uuid")
   uuid: string;
 
-  @Check("final_grade > 0 AND final_grade <= 100")
+  @Check("practices >= 0 AND practices <= 100")
+  @Column("smallint")
+  practices: number;
+
+  @Check("participations >= 0 AND participations <= 100")
+  @Column("smallint")
+  participations: number;
+
+  @Check("attendance >= 0 AND attendance <= 100")
+  @Column("smallint")
+  attendance: number;
+
+  @Check("exams >= 0 AND exams <= 100")
+  @Column("smallint")
+  exams: number;
+
+  @Check("final_grade >= 0 AND final_grade <= 100")
   @Column("smallint")
   final_grade: number;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  calculateFinalGrade() {
+    const practices = this.practices * GRADE_PECENTAGE.practices;
+    const participations = this.participations * GRADE_PECENTAGE.participations;
+    const attendance = this.attendance * GRADE_PECENTAGE.attendance;
+    const exams = this.exams * GRADE_PECENTAGE.exams;
+
+    this.final_grade = Math.round(
+      practices + participations + attendance + exams,
+    );
+  }
 
   @Column("varchar", { nullable: true })
   teacher_comments: string;

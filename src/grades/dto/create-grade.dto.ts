@@ -1,18 +1,26 @@
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsPositive,
-  IsUUID,
-  Max,
-  MinLength,
-} from "class-validator";
+import { IsNotEmpty, IsOptional, IsUUID, Max, Min } from "class-validator";
 import { UUID } from "crypto";
 
 export class CreateGradeDto {
   @Max(100)
-  @IsPositive()
+  @Min(0)
   @IsNotEmpty()
-  final_grade: number;
+  practices: number;
+
+  @Max(100)
+  @Min(0)
+  @IsNotEmpty()
+  participations: number;
+
+  @Max(100)
+  @Min(0)
+  @IsNotEmpty()
+  attendance: number;
+
+  @Max(100)
+  @Min(0)
+  @IsNotEmpty()
+  exams: number;
 
   @IsOptional()
   @IsNotEmpty()
