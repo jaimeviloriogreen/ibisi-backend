@@ -35,7 +35,6 @@ export class AuthService {
 
     return { access_token: await this.jwtService.signAsync(payload) };
   }
-
   async singIn(createUserDto: CreateUserDto) {
     return await this.usersService.create(createUserDto);
   }
