@@ -45,6 +45,7 @@ export class GradesController {
     return this.gradesService.update(uuid, updateGradeDto);
   }
 
+  @Role(RolesEnum.ADMIN, RolesEnum.TEACHER)
   @Delete(":uuid")
   remove(@Param("uuid") uuid: UUID) {
     return this.gradesService.remove(uuid);
