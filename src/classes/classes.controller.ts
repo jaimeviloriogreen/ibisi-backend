@@ -12,10 +12,14 @@ import { ClassesService } from "./classes.service";
 import { CreateClassDto } from "./dto/create-class.dto";
 import { UpdateClassDto } from "./dto/update-class.dto";
 import { UUID } from "crypto";
+import { DataSource } from "typeorm";
 
 @Controller("classes")
 export class ClassesController {
-  constructor(private readonly classesService: ClassesService) {}
+  constructor(
+    private readonly classesService: ClassesService,
+    private readonly dataSource: DataSource,
+  ) {}
 
   @Post()
   create(@Body() createClassDto: CreateClassDto) {
@@ -32,9 +36,12 @@ export class ClassesController {
     return this.classesService.findOne(uuid);
   }
 
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateClassDto: UpdateClassDto) {
-    return this.classesService.update(+id, updateClassDto);
+  @Patch(":uuid")
+  update(
+    @Param("uuid", ParseUUIDPipe) uuid: UUID,
+    @Body() updateClassDto: UpdateClassDto,
+  ) {
+    return this.classesService.update(uuid, updateClassDto);
   }
 
   @Delete(":uuid")

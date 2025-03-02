@@ -112,12 +112,14 @@ export class GradesService {
         grade.attendance = attendance ?? grade.attendance;
         grade.exams = exams ?? grade.exams;
 
-        await this.dataSource.getRepository(Grade).save(grade);
+        await manager.getRepository(Grade).save(grade);
 
         return grade;
       } catch (error) {
         if (error.code === "23505") {
-          throw new ConflictException("Esta clase ya ha sido registrada.");
+          throw new ConflictException(
+            "Esta calificación para este estudiante y asignatura ya existe.",
+          );
         }
         throw error;
       }

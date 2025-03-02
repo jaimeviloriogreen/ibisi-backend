@@ -25,7 +25,7 @@ export class CreateStudentDto {
 
   @IsNotEmpty()
   @IsEnum(StudentAccountStatus)
-  acount_status: StudentAccountStatus;
+  account_status: StudentAccountStatus;
 
   @IsNotEmpty()
   @IsEnum(StudentStatus)

@@ -39,7 +39,7 @@ export class Student {
     enum: StudentAccountStatus,
     default: StudentAccountStatus.PAID,
   })
-  acount_status: string;
+  account_status: string;
 
   @Column("enum", { enum: StudentStatus, default: StudentStatus.ENROLLED })
   status: string;

@@ -78,7 +78,7 @@ export class UsersService {
           const student = new Student();
           student.level = createUserDto.student.level;
           student.registration_date = createUserDto.student.registration_date;
-          student.acount_status = createUserDto.student.acount_status;
+          student.account_status = createUserDto.student.account_status;
           student.status = createUserDto.student.status;
           student.scholarship = createUserDto.student.scholarship;
           student.user = userSaved;

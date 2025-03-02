@@ -44,7 +44,7 @@ export class ClassesService {
           }),
         );
 
-        const classCreated = this.dataSource.getRepository(Class).create({
+        const classCreated = manager.getRepository(Class).create({
           start_date: createClassDto.start_date.split("T")[0],
           end_date: createClassDto.end_date.split("T")[0],
           start_time: createClassDto.start_time,
@@ -131,15 +131,57 @@ export class ClassesService {
 
     return getClass;
   }
+  async update(uuid: UUID, updateClassDto: UpdateClassDto) {
+    try {
+      return await this.dataSource.transaction(async (manager) => {
+        const getClass = await this.findOne(uuid, manager);
 
-  update(id: number, updateClassDto: UpdateClassDto) {
-    return `This action updates a #${id} class`;
+        const subject = await this.subjectsServise.findOne(
+          updateClassDto.subjectId,
+          manager,
+        );
+
+        const teacher = await this.teachersServise.findOne(
+          updateClassDto.teacherId,
+          manager,
+        );
+
+        const students = await Promise.all(
+          updateClassDto.studentsId.map(async (uuid) => {
+            return await this.studentsServise.findOne(uuid, manager);
+          }),
+        );
+
+        getClass.students = students;
+        getClass.subject = subject;
+        getClass.teacher = teacher;
+        getClass.day = updateClassDto.day;
+        getClass.section = updateClassDto.section;
+
+        await manager.getRepository(Class).save(getClass);
+
+        await manager.getRepository(Class).update(getClass.id, {
+          start_date: updateClassDto.start_date.split("T")[0],
+          end_date: updateClassDto.end_date.split("T")[0],
+          start_time: updateClassDto.start_time,
+          end_time: updateClassDto.end_time,
+        });
+
+        const updatedClass = await this.findOne(uuid, manager);
+
+        return updatedClass;
+      });
+    } catch (error) {
+      if (error.code === "23505") {
+        throw new ConflictException("Esta clase ya ha sido registrada.");
+      }
+      throw error;
+    }
   }
   async remove(uuid: UUID) {
     const { id } = await this.findOne(uuid);
     return this.classesRepository.delete({ id });
   }
-
   async removeStudent(classUUID: UUID, studentUUID: UUID) {
     return await this.dataSource.transaction(async (manager) => {
       const getStudent = await this.studentsServise.findOne(

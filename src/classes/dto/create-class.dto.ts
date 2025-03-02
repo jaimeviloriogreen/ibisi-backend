@@ -62,4 +62,3 @@ export class CreateClassDto {
   @IsBoolean()
   is_active: boolean;
 }
-new Date("2025-01-13");
