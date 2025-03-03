@@ -21,6 +21,7 @@ export class TeachersService {
   async findAll() {
     const teachers = await this.teachersRepository.find({
       relations: { user: true },
+      order: { user: { fname: "ASC" } },
     });
     const sanitizedTeachers = plainToInstance(User, teachers);
     return sanitizedTeachers;
