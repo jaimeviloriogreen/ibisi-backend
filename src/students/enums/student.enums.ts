@@ -26,6 +26,12 @@ export enum StudentLevel {
    * @type {string}
    */
   FOURTH = "FOURTH_YEAR",
+
+  /**
+   * Mixed year of the program.
+   * @type {string}
+   */
+  MIXED = "MIXED_YEAR",
 }
 
 /**
