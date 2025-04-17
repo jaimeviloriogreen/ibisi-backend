@@ -79,9 +79,23 @@ export class ClassesService {
         },
         students: {
           user: true,
+          grade: {
+            subject: true,
+          },
         },
       },
     });
+
+    if (classes) {
+      classes.map((cls) => {
+        return cls.students.map((std) => {
+          std.grade = std.grade.filter((grd) => {
+            return grd.subject.id === cls.subject.id;
+          });
+          return std;
+        });
+      });
+    }
 
     const classesSanitized = plainToInstance(User, classes);
 

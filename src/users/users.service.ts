@@ -124,7 +124,12 @@ export class UsersService {
         teacher: {
           classes: {
             subject: true,
-            students: true,
+            students: {
+              user: true,
+              grade: {
+                subject: true,
+              },
+            },
           },
         },
         admin: true,
@@ -132,6 +137,20 @@ export class UsersService {
     });
 
     if (!user) throw new NotFoundException(`El usuario no se encuentra.`);
+
+    // Filter grades that only apply to the subject of this class
+    if (user.teacher) {
+      if (user.teacher.classes.length > 0) {
+        user.teacher.classes.map((cls) => {
+          return cls.students.map((std) => {
+            std.grade = std.grade.filter((grd) => {
+              return grd.subject.id === cls.subject.id;
+            });
+            return std;
+          });
+        });
+      }
+    }
 
     const sanitizedUser = sanitized ? plainToInstance(User, user) : user;
 
