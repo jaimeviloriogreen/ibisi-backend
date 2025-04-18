@@ -86,6 +86,7 @@ export class ClassesService {
       },
     });
 
+    // Filter grades that only apply to the subject of this class
     if (classes) {
       classes.map((cls) => {
         return cls.students.map((std) => {
