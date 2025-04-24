@@ -115,7 +115,7 @@ export class UsersService {
       relations: {
         role: true,
         student: {
-          grade: { subject: true, teacher: { user: true } }, // student: true
+          grade: { subject: true, teacher: { user: true } },
           classes: {
             subject: true,
             teacher: { user: true },
@@ -138,18 +138,24 @@ export class UsersService {
 
     if (!user) throw new NotFoundException(`El usuario no se encuentra.`);
 
-    // Filter grades that only apply to the subject of this class
+    if (user.student) {
+      user.student.classes = user.student.classes.filter(
+        (cls) => cls.is_active,
+      );
+    }
+
     if (user.teacher) {
-      if (user.teacher.classes.length > 0) {
-        user.teacher.classes.map((cls) => {
-          return cls.students.map((std) => {
-            std.grade = std.grade.filter((grd) => {
-              return grd.subject.id === cls.subject.id;
-            });
-            return std;
-          });
+      user.teacher.classes = user.teacher.classes.filter(
+        (cls) => cls.is_active,
+      );
+      // Filter grades that only apply to the subject of this class
+      user.teacher.classes.forEach((cls) => {
+        cls.students.forEach((std) => {
+          std.grade = std.grade.filter(
+            (grd) => grd.subject.id === cls.subject.id,
+          );
         });
-      }
+      });
     }
 
     const sanitizedUser = sanitized ? plainToInstance(User, user) : user;

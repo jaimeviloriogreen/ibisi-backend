@@ -51,6 +51,7 @@ export class ClassesService {
           end_time: createClassDto.end_time,
           section: createClassDto.section,
           day: createClassDto.day,
+          is_active: createClassDto.is_active,
           subject,
           teacher,
           students,
@@ -88,12 +89,11 @@ export class ClassesService {
 
     // Filter grades that only apply to the subject of this class
     if (classes) {
-      classes.map((cls) => {
-        return cls.students.map((std) => {
-          std.grade = std.grade.filter((grd) => {
-            return grd.subject.id === cls.subject.id;
-          });
-          return std;
+      classes.forEach((cls) => {
+        cls.students.forEach((std) => {
+          std.grade = std.grade.filter(
+            (grd) => grd.subject.id === cls.subject.id,
+          );
         });
       });
     }
@@ -133,16 +133,16 @@ export class ClassesService {
     if (!getClass) throw new NotFoundException(`Esta clase no se encuentra.`);
 
     // Filter grades that only apply to the subject of this class
+
     if (getClass) {
-      getClass.students = getClass.students.map((student) => {
-        student.grade = student.grade.filter(
-          (grade) => grade.subject.id === getClass.subject.id,
+      getClass.students.forEach((std) => {
+        std.grade = std.grade.filter(
+          (grd) => grd.subject.id === getClass.subject.id,
         );
-        return student;
       });
     }
 
-    // TODO: Sanear la contreaseña de los usuarios en getClass
+    // TODO: Sanitize passwords of users in getClass
 
     return getClass;
   }
@@ -172,6 +172,7 @@ export class ClassesService {
         getClass.teacher = teacher;
         getClass.day = updateClassDto.day;
         getClass.section = updateClassDto.section;
+        getClass.is_active = updateClassDto.is_active;
 
         await manager.getRepository(Class).save(getClass);
 
