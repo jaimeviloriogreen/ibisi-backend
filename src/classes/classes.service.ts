@@ -85,6 +85,7 @@ export class ClassesService {
           },
         },
       },
+      order: { is_active: "DESC", teacher: { user: { fname: "ASC" } } },
     });
 
     // Filter grades that only apply to the subject of this class
