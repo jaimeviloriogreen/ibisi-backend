@@ -71,8 +71,8 @@ export class ClassesService {
       where: { is_active: true },
     });
   }
-  async findAll() {
-    const classes = await this.classesRepository.find({
+  async findAll(page: number, limit: number) {
+    const [data, total] = await this.classesRepository.findAndCount({
       relations: {
         subject: true,
         teacher: {
@@ -86,11 +86,13 @@ export class ClassesService {
         },
       },
       order: { is_active: "DESC", teacher: { user: { fname: "ASC" } } },
+      take: limit,
+      skip: page >= 1 ? (page - 1) * limit : 0,
     });
 
     // Filter grades that only apply to the subject of this class
-    if (classes) {
-      classes.forEach((cls) => {
+    if (data) {
+      data.forEach((cls) => {
         cls.students.forEach((std) => {
           std.grade = std.grade.filter(
             (grd) => grd.subject.id === cls.subject.id,
@@ -99,9 +101,15 @@ export class ClassesService {
       });
     }
 
-    const classesSanitized = plainToInstance(User, classes);
+    const classes = plainToInstance(User, data);
 
-    return classesSanitized;
+    return {
+      classes,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
   async findOne(uuid: UUID, manager?: EntityManager) {
     const repo = manager
