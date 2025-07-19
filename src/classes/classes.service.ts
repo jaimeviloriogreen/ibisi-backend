@@ -60,7 +60,7 @@ export class ClassesService {
         return await manager.getRepository(Class).save(classCreated);
       } catch (error) {
         if (error.code === "23505") {
-          throw new ConflictException("Esta clase ya ha sido registrada.");
+          throw new ConflictException("Esta clase ya está activa.");
         }
         throw error;
       }
@@ -198,7 +198,7 @@ export class ClassesService {
       });
     } catch (error) {
       if (error.code === "23505") {
-        throw new ConflictException("Esta clase ya ha sido registrada.");
+        throw new ConflictException("Esta clase ya está activa.");
       }
       throw error;
     }

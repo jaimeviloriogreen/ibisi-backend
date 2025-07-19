@@ -14,7 +14,7 @@ import { ClassesDay, ClassesSections } from "../enums/classes.enums";
 import { Teacher } from "src/teachers/entities/teacher.entity";
 import { Subject } from "src/subjects/entities/subject.entity";
 
-@Unique(["teacher", "subject", "day"])
+@Unique(["teacher", "subject", "day", "is_active"])
 @Entity()
 export class Class {
   @PrimaryGeneratedColumn()
