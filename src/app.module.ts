@@ -32,7 +32,7 @@ import { ClassesModule } from "./classes/classes.module";
       username: process.env.IBISI_USER,
       password: process.env.IBISI_PASSWORD,
       database: process.env.IBISI_NAME,
-      synchronize: process.env.IBISI_NODE_ENV === "development",
+      synchronize: process.env.IBISI_NODE_ENV === "production",
       autoLoadEntities: true,
     }),
     RolesModule,
